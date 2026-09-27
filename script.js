@@ -652,3 +652,63 @@ function choosePlan(tierKey) {
 }
 
 document.addEventListener('DOMContentLoaded', () => applyLanguage(currentLang));
+
+// =========================================================
+// BANAL NA GRID SYSTEM AT DATA NG MGA LIVE MODELS
+// =========================================================
+const streamData = {
+  "models": [
+    {
+      "username": "YoungPinay_022",
+      "viewersCount": 585,
+      "previewUrlThumbSmall": "https://stripchat.com",
+      "status": "public"
+    },
+    {
+      "username": "Hollygod22",
+      "viewersCount": 97,
+      "previewUrlThumbSmall": "https://stripchat.com",
+      "status": "public"
+    },
+    {
+      "username": "knkybella",
+      "viewersCount": 53,
+      "previewUrlThumbSmall": "https://stripchat.com",
+      "status": "public"
+    },
+    {
+      "username": "sexylove19",
+      "viewersCount": 21,
+      "previewUrlThumbSmall": "https://stripchat.com",
+      "status": "public"
+    }
+  ]
+};
+
+function renderModelGrid() {
+    const gridContainer = document.getElementById('model-grid');
+    if (!gridContainer) return; // Sisiguraduhin na may container bago mag-render
+    
+    gridContainer.innerHTML = '';
+
+    streamData.models.forEach(model => {
+        const card = document.createElement('div');
+        card.className = 'model-card';
+
+        card.innerHTML = `
+            <div class="thumbnail-wrapper">
+                <span class="live-badge">LIVE</span>
+                <img src="${model.previewUrlThumbSmall}" alt="${model.username}">
+                <span class="viewers-count">👥 ${model.viewersCount}</span>
+            </div>
+            <div class="model-info">
+                <p class="model-name">${model.username}</p>
+                <span class="model-status">● ${model.status.toUpperCase()}</span>
+            </div>
+        `;
+        gridContainer.appendChild(card);
+    });
+}
+
+// Awtomatikong ipapakita ang mga models kapag nag-load ang web layout context
+document.addEventListener('DOMContentLoaded', renderModelGrid);
