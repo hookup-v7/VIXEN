@@ -1,1 +1,154 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Amara — Meet People, Genuinely</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="bg-overlay"></div>
+    <div id="tier-badge" class="tier-badge" style="display:none;"></div>
+
+    <select id="lang-switcher" class="lang-switcher" onchange="applyLanguage(this.value)">
+        <option value="en">🇬🇧 English</option>
+        <option value="tl">🇵🇭 Tagalog</option>
+        <option value="zh">🇨🇳 中文</option>
+        <option value="es">🇪🇸 Español</option>
+        <option value="fr">🇫🇷 Français</option>
+        <option value="de">🇩🇪 Deutsch</option>
+        <option value="ja">🇯🇵 日本語</option>
+        <option value="ko">🇰🇷 한국어</option>
+        <option value="pt">🇵🇹 Português</option>
+        <option value="ar">🇸🇦 العربية</option>
+        <option value="ru">🇷🇺 Русский</option>
+        <option value="hi">🇮🇳 हिन्दी</option>
+    </select>
+
+    <!-- SCREEN 1: LOGIN -->
+    <div id="screen-auth" class="screen active">
+        <div class="box">
+            <h2 data-i18n="auth_title">Welcome back</h2>
+            <p class="subtitle" data-i18n="auth_subtitle">Sign in to continue to your account.</p>
+            <input type="email" id="login-email" data-i18n-placeholder="login_email_ph" placeholder="Email Address">
+            <input type="password" id="login-pass" data-i18n-placeholder="login_pass_ph" placeholder="Password">
+            <button onclick="handleLogin()" data-i18n="signin_btn">Sign In</button>
+            <p class="fine-print"><span data-i18n="no_account">No account?</span> <a href="#" onclick="showScreen('screen-register')" data-i18n="create_one">Create one</a></p>
+        </div>
+    </div>
+
+    <!-- SCREEN 2: REGISTRATION -->
+    <div id="screen-register" class="screen">
+        <div class="box" style="max-width: 500px;">
+            <h2 data-i18n="register_title">Create your profile</h2>
+            <p class="subtitle" data-i18n="register_subtitle">Tell us a bit about yourself to get started.</p>
+            <input type="text" id="reg-name" data-i18n-placeholder="reg_name_ph" placeholder="Full Name">
+            <input type="email" id="reg-email" data-i18n-placeholder="reg_email_ph" placeholder="Email Address">
+            <input type="tel" id="reg-phone" data-i18n-placeholder="reg_phone_ph" placeholder="Phone Number">
+            <input type="date" id="reg-dob" placeholder="Birthdate">
+            <select id="reg-sex">
+                <option value="" data-i18n="reg_gender_default">Select Gender</option>
+                <option value="Male" data-i18n="reg_gender_male">Male</option>
+                <option value="Female" data-i18n="reg_gender_female">Female</option>
+                <option value="Nonbinary" data-i18n="reg_gender_nonbinary">Non-binary</option>
+                <option value="Prefer not to say" data-i18n="reg_gender_prefer">Prefer not to say</option>
+            </select>
+            <button onclick="processRegistrationData()" data-i18n="continue_btn">Continue</button>
+        </div>
+    </div>
+
+    <!-- SCREEN 3: EMAIL VERIFICATION -->
+    <div id="screen-verify" class="screen">
+        <div class="box">
+            <h2 data-i18n="verify_title">Verify your email</h2>
+            <p class="subtitle" data-i18n="verify_subtitle">We sent a 4-digit code to your email. For this demo, it's shown below — enter it to continue.</p>
+            <h1 id="generated-otp-display">0000</h1>
+            <input type="text" id="user-otp-input" data-i18n-placeholder="otp_ph" placeholder="Enter the 4-digit code" maxlength="4" style="text-align: center; font-size: 20px;">
+            <button onclick="verifyOTPCode()" data-i18n="verify_btn">Verify</button>
+        </div>
+    </div>
+
+    <!-- SCREEN 4: OPTIONAL PROFILE PHOTO -->
+    <div id="screen-photo" class="screen">
+        <div class="box">
+            <h2 data-i18n="photo_title">Add a profile photo</h2>
+            <p class="subtitle" data-i18n="photo_subtitle">Optional — you can always add or change this later in your settings.</p>
+            <input type="file" id="photo-file" accept="image/*">
+            <button onclick="finishProfileSetup()" data-i18n="save_continue_btn">Save & Continue</button>
+            <p class="fine-print"><a href="#" onclick="finishProfileSetup()" data-i18n="skip_for_now">Skip for now</a></p>
+        </div>
+    </div>
+
+    <!-- SCREEN 5: LOBBY -->
+    <div id="screen-lobby" class="screen">
+        <div class="lobby-container">
+            <div class="lobby-header">
+                <div>
+                    <h2><span data-i18n="welcome_label">Welcome,</span> <span id="lobby-username">friend</span></h2>
+                    <p class="subtitle" id="lobby-tier-line">Free plan</p>
+                </div>
+                <button class="btn-secondary" onclick="showScreen('screen-plans')" data-i18n="manage_plan_btn">Manage Plan</button>
+            </div>
+
+            <h3 class="section-title" data-i18n="regional_channels_title">Regional Channels</h3>
+            <p class="section-hint" data-i18n="regional_channels_hint">Join a channel to meet people from that region.</p>
+            <div class="channels-grid" id="channels-grid"></div>
+
+            <h3 class="section-title" data-i18n="private_rooms_title">Private Rooms</h3>
+            <p class="section-hint" data-i18n="private_rooms_hint">Smaller, focused spaces for closer conversations. Availability depends on your plan.</p>
+            <div class="channels-grid" id="rooms-grid"></div>
+        </div>
+    </div>
+
+    <!-- SCREEN 5B: CHANNEL VIEW -->
+    <div id="screen-channel-view" class="screen">
+        <div class="lobby-container">
+            <div class="view-header">
+                <button class="btn-secondary btn-back" onclick="showScreen('screen-lobby')" data-i18n="back_to_lobby">← Back to Lobby</button>
+                <h2 id="current-channel-title">Channel</h2>
+            </div>
+            <div id="channel-empty-state" class="empty-state">
+                <p data-i18n="channel_empty">No members here yet — be the first to say hello when this channel opens up.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCREEN 5C: ROOM VIEW -->
+    <div id="screen-room-view" class="screen">
+        <div class="lobby-container">
+            <div class="view-header">
+                <button class="btn-secondary btn-back" onclick="showScreen('screen-lobby')" data-i18n="back_to_lobby">← Back to Lobby</button>
+                <h2 id="current-room-title">Room</h2>
+            </div>
+            <div id="room-content" class="empty-state"></div>
+        </div>
+    </div>
+
+    <!-- SCREEN 6: PLANS -->
+    <div id="screen-plans" class="screen">
+        <h2 style="margin-bottom: 10px;" data-i18n="plans_title">Choose your plan</h2>
+        <p class="subtitle" style="margin-bottom: 30px;" data-i18n="plans_subtitle">Upgrade anytime. No hidden fees, cancel whenever you like.</p>
+        <div class="plans-grid" id="plans-grid"></div>
+        <button class="btn-secondary" style="max-width:300px;margin-top:30px;" onclick="showScreen('screen-lobby')" data-i18n="back_to_lobby_btn">Back to Lobby</button>
+    </div>
+
+    <!-- SCREEN 7: PLAN CONFIRMATION -->
+    <div id="screen-account" class="screen">
+        <div class="box" style="max-width: 500px;">
+            <h2 data-i18n="account_title">You're all set 🎉</h2>
+            <div class="account-badge">
+                <p><strong data-i18n="plan_label">Plan:</strong> <span id="selected-plan-notice">—</span></p>
+                <p><strong data-i18n="membership_id_label">Membership ID:</strong> <span id="membership-id-display">—</span></p>
+            </div>
+            <p class="subtitle" style="text-align:left;" data-i18n="account_subtitle">
+                Your membership ID identifies your plan across the app. You can view or change your plan anytime from your account settings.
+            </p>
+            <button onclick="showScreen('screen-lobby')" data-i18n="continue_lobby_btn">Continue to Lobby</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
