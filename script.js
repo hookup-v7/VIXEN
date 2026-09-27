@@ -710,5 +710,21 @@ function renderModelGrid() {
     });
 }
 
-// Awtomatikong ipapakita ang mga models kapag nag-load ang web layout context
-document.addEventListener('DOMContentLoaded', renderModelGrid);
+// Palitan ang mga links sa script.js mo ng ganito para sumunod sa sarili mong files:
+const streamData = {
+  "models": [
+    {
+      "username": "YoungPinay_022",
+      "viewersCount": 585,
+      "previewUrlThumbSmall": "images/model1.jpg", // <--- Gagamit ng sarili mong uploaded image
+      "status": "public"
+    },
+    {
+      "username": "Hollygod22",
+      "viewersCount": 97,
+      "previewUrlThumbSmall": "images/model2.jpg",
+      "status": "public"
+    }
+    // Gawin mo rin sa iba pang models...
+  ]
+};
